@@ -15,6 +15,9 @@ export default function CustomerPage() {
   const fetchCustomers = async () => {
     try {
       const response = await fetch(`${APIBASE}/customer`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch customers");
+      }
       const customers = await response.json();
       setCustomerList(customers);
     } catch (error) {
@@ -27,13 +30,16 @@ export default function CustomerPage() {
     if (editMode) {
       // Update existing customer
       try {
-        await fetch(`${APIBASE}/customer`, {
+        const response = await fetch(`${APIBASE}/customer`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ ...data, _id: currentCustomerId }), // Include currentCustomerId for update
         });
+        if (!response.ok) {
+          throw new Error("Failed to update customer");
+        }
         reset(); // Reset form fields
         setEditMode(false);
         setCurrentCustomerId(null); // Clear the current customer ID
@@ -44,13 +50,16 @@ export default function CustomerPage() {
     } else {
       // Create new customer
       try {
-        await fetch(`${APIBASE}/customer`, {
+        const response = await fetch(`${APIBASE}/customer`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
         });
+        if (!response.ok) {
+          throw new Error("Failed to create customer");
+        }
         reset(); // Reset the form after adding
         await fetchCustomers(); // Refresh customer list after adding
       } catch (error) {
@@ -74,9 +83,12 @@ export default function CustomerPage() {
     if (!confirm("Are you sure you want to delete this customer?")) return;
 
     try {
-      await fetch(`${APIBASE}/customer/${id}`, {
+      const response = await fetch(`${APIBASE}/customer/${id}`, {
         method: "DELETE",
       });
+      if (!response.ok) {
+        throw new Error("Failed to delete customer");
+      }
       await fetchCustomers(); // Refresh customer list after deletion
     } catch (error) {
       console.error("Error deleting customer:", error);
