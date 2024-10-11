@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import Link from "next/link";
 
 export default function CustomerPage() {
-  const APIBASE = process.env.NEXT_PUBLIC_API_BASE; // Ensure this is set correctly in .env
+  const APIBASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:3000/api"; // Default to local if not in production
   const [customerList, setCustomerList] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [currentCustomerId, setCurrentCustomerId] = useState(null); // Store the currently editing customer ID
